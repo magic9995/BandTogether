@@ -37,7 +37,8 @@ class User:
 
         self.attributes = analysis.to_dict()
         self.topSongs = tracks
-
+        print("attributes")
+        print(self.attributes)
         print(tracks)
 
     def getSongData(self):

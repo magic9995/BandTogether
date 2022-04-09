@@ -27,12 +27,10 @@ class App:
 
         pass
 
-    def compare(self, User):
+    def compare(self, sser1, sser2):
 
         pass
 
     def enterInDB(self, User):
 
         pass
-
-    

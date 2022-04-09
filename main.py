@@ -13,9 +13,9 @@ class User:
         scope = "user-top-read"
 
         sp = spotipy.Spotify(auth_manager = SpotifyOAuth(scope=scope, 
-                    client_id='Insert Client ID here',
-                    client_secret='Insert Client Secret',
-                    redirect_uri='http://127.0.0.1:8000',
+                    client_id='2389dfc7a35846509d76f95c5f37c15a',
+                    client_secret='972e17031c6744c0b668b4157e656bf6',
+                    redirect_uri='http://localhost:7777/callback',
                     open_browser=True,
                     show_dialog=True))
         

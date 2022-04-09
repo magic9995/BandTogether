@@ -4,8 +4,13 @@ Enter command:
 git clone https://github.com/magic9995/BandTogether.git
 
 Then enter folder and edit files there.
-To get latest files, enter:
-git pull https://github.com/magic9995/BandTogether.git
+To get latest files and you don't have any changes, enter:
+git pull
+
+If you have some changes, then enter
+git add *
+git commit -m "Insert your own custom message here"
+git pull
 
 Once you are done with your changes, do the following:
 

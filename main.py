@@ -1,15 +1,48 @@
 import pandas as pd
 import spotipy
+from spotipy.oauth2 import SpotifyOAuth
 
 class User:
 
+    attributes = None
+    topSongs = None
+
     def __init__(self):
 
-        pass
+        ## Authenticate Spotify Account
+        scope = "user-top-read"
+
+        sp = spotipy.Spotify(auth_manager = SpotifyOAuth(scope=scope, 
+                    client_id='Insert Client ID here',
+                    client_secret='Insert Client Secret',
+                    redirect_uri='http://127.0.0.1:8000',
+                    open_browser=True,
+                    show_dialog=True))
+        
+        ## First get the top tracks using spotify API
+        ## This gives us a dictionary, which I convert to a pandas DataFrame called "tracks"
+        ## Then I get all the attributes for the top tracks and put them in a pandas DataFrame 
+        ## which I call "analysis". Then I get the mean for each category and standardize them
+
+        topTracks = sp.current_user_top_tracks(limit = 20, time_range="medium_term")
+        tracks = pd.DataFrame.from_dict(topTracks['items'])[['id', 'name', 'album']]
+        analysis = pd.DataFrame(sp.audio_features(tracks['id'].to_list()))
+        analysis = analysis.mean(axis = 0)[['liveness', 'valence', 'danceability', 'loudness', 'mode',
+                                        'acousticness', 'instrumentalness', 'liveness', 'valence', 
+                                        'tempo', 'energy']]
+        analysis['loudness'] /= 60
+        analysis['tempo'] /= 200
+
+        ## Set class variables
+
+        self.attributes = analysis.to_dict()
+        self.topSongs = tracks
+
+        print(tracks)
 
     def getSongData(self):
 
-        pass
+        return self.attributes
 
     ## Insert functions here
 

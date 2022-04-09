@@ -1,0 +1,55 @@
+body {
+    max-width: 800px;
+    margin: auto;
+  }
+  .top_bar{
+      height: 100px;
+      width: 70%;
+  }
+  /*Styling for images*/
+  .images{
+    --gap: 18px;
+    --num-cols: 4;
+    --row-height: 250px;
+  
+    box-sizing: border-box;
+    padding: var(--gap);
+  
+    display: grid;
+    grid-template-columns: repeat(var(--num-cols), 1fr);
+    grid-auto-rows: var(--row-height);
+    gap: var(--gap);
+  }
+  
+  
+  
+  .images > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .image-grid-col-2 {
+    grid-column: span 2;
+  }
+  
+  .image-grid-row-2 {
+    grid-row: span 2;
+  }
+  /* Anything udner 1024px */
+  @media screen and (max-width: 1024px) {
+    .image-grid {
+      --num-cols: 2;
+      --row-height: 200px;
+    }
+  }
+  /*Styling for artists*/
+  styled-table {
+    border-collapse: collapse;
+    max-width: 800px;
+    margin: auto;
+    font-size: 30px;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+  

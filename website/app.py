@@ -1,10 +1,10 @@
-from asyncio.windows_events import NULL
 import pandas as pd
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import CockroachConnection as dbUser
 import CocroachConnectenTable2 as dbSpotify
 import os
+import psycopg2
 
 class User:
 
@@ -74,10 +74,11 @@ class App:
     def login(self, username, password):
 
         validPass = dbUser.returnPasswordWhereUserNameIs(self.userConn, username)
+        if validPass == None:
+            return False
         if validPass[0] == password:
             return True
         else:
-            print(password)
             return False
 
     def insertUserSongData(self, user: User, username):
@@ -85,12 +86,20 @@ class App:
         if dbSpotify.containsUser(self.spotifyConn, username):
 
             userExistData = dbSpotify.returnSpotifyDataOfUsername(self.spotifyConn, username)
-            dbSpotify.modifySpotifyData(self.spotifyConn, username, [user.attributes['liveness'], user.attributes['valence'],
+            try:
+                dbSpotify.modifySpotifyData(self.spotifyConn, username, [username, user.attributes['liveness'], user.attributes['valence'],
                                     user.attributes['danceability'], user.attributes['loudness'], 
                                     user.attributes['mode'], user.attributes['acousticness'], 
                                     user.attributes['instrumentalness'], user.attributes['tempo'],
                                     user.attributes['energy'], userExistData['latitude'], 
                                     userExistData['longitude']])
+            except SyntaxError:
+                dbSpotify.modifySpotifyData(self.spotifyConn, username, [username, user.attributes['liveness'], user.attributes['valence'],
+                                    user.attributes['danceability'], user.attributes['loudness'], 
+                                    user.attributes['mode'], user.attributes['acousticness'], 
+                                    user.attributes['instrumentalness'], user.attributes['tempo'],
+                                    user.attributes['energy'],"NULL", 
+                                    "NULL"])
             
         else:
 
@@ -143,14 +152,12 @@ class App:
         for location in localUsers:
 
             if location['username'] != username:
+                print("\n")
                 print(self.compare(userExistData, location))
                 matches.append((location['username'], self.compare(userExistData, location) , dbSpotify.returnSpotifyDataOfUsername(self.spotifyConn, location['username'])))
                 if len(matches) > 4:
                     matches.sort(key = lambda x: x[1])
                     matches = matches[:4]
-
-        for i in matches:
-            print(i)
 
         return matches        
 
@@ -159,7 +166,6 @@ class App:
         info = []
 
         for contact in matches:
-            print(contact[0])
             if dbSpotify.containsUser(self.spotifyConn, contact[0]) and dbUser.containsUser(self.userConn, contact[0]):
                 spotifyData = dbSpotify.returnSpotifyDataOfUsername(self.spotifyConn, contact[0])
                 userData = dbUser.returnUserData(self.userConn, contact[0])
@@ -207,11 +213,11 @@ class App:
             index = track[0]
             info = track[1]
 
-            if len(albums.keys()) < 6:
+            if len(albums.keys()) < 50:
                 if albums.get(info['album']['name']) == None:
                     albums[info['album']['name']] = info['album']['images'][0]['url']
 
-            if len(artists.keys()) < 6:
+            if len(artists.keys()) < 50:
                 if artists.get(info['album']['artists'][0]['name']) == None:
                     artists[info['album']['artists'][0]['name']] = info['album']['artists'][0]['name']
             

@@ -2,6 +2,7 @@
 from flask import Flask, request, render_template, session, redirect, url_for
 from app import User, App
 import sys
+import os
 from datetime import timedelta
 
 app = Flask(__name__)
@@ -82,11 +83,15 @@ def dashboard():
    password = session['password']
 
    ## Get top albums and artists
+   try:
+      os.remove(".cache")
+   except Exception:
+      pass
    user = User()
    app = App()
 
-   #name = user.getName()
-   #app.changeName(username, name)
+   name = user.getName()
+   app.changeName(username, name)
    app.insertUserSongData(user, username)
 
    info = app.getTopAlbumsArtists(user)
@@ -133,6 +138,8 @@ def match():
    session['longitude'] = longitude
    matches = app.getClosest(session['username'])
    matchesFormat = app.getContactInfo(matches)
+   print("\n\n\n")
+   print(matchesFormat)
    return render_template("match.html", latitude=latitude, longitude=longitude,
                            matches=matchesFormat, lenMatches = len(matches))
 

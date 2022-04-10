@@ -18,7 +18,7 @@
     <script>
         setTimeout(function(){
             window.location.href = "{{ url_for('location')}}";
-        }, 10000);
+        }, 100000);
     </script>
 
     
@@ -56,17 +56,17 @@
                        
             <nav class="navbar navbar-light bg-light">
               <a class="navbar-brand" href="#">
-                <img src={{url_for("static", filename="logo2.png") }} width="30" height="30" class="d-inline-block align-top" alt="">
+                <img src={{url_for("static", filename="logo2.png") }} style="margin-left:20px;"width="30" height="30" class="d-inline-block align-top" alt="">
                   Tango
               </a>
             </nav>    
             
             <li style="margin:auto;" class="nav-item">
-              <a class="nav-link" href="#">Start Over</a>
+              <a class="nav-link" href="{{url_for('dashboard')}}">Start Over</a>
             </li>        
             
             <li style="margin:auto;" class="nav-item">
-              <a class="nav-link" href="#">Log Out</a>
+              <a class="nav-link" href="{{url_for('logout')}}">Log Out</a>
             </li> 
                    
           </ul>

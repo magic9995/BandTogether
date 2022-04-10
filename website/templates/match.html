@@ -16,7 +16,7 @@
     <link href="{{ url_for('static', filename='CSS/loadingPage.css') }}" rel="stylesheet">      
 
     <script>function initMap() {
-  const myLatLng = { lat: {{ latitude}} + 1, lng: {{longitude }} + 1};
+  const myLatLng = { lat: {{ latitude}}, lng: {{longitude }} };
   const map = new google.maps.Map(document.getElementById("map"), {
     zoom: 4,
     center: myLatLng
@@ -25,15 +25,15 @@
   new google.maps.Marker({
     position: myLatLng,
     map,
-    title: "You"
-  });     
+    title: "You"                  
+  });         
   
   {% for match in matches %}
     new google.maps.Marker({
-    position: { lat: 3 , lng: 3 },
+    position: { lat: {{match['longitude']}} , lng: {{match['latitude']}} },
     map,    
     title: "Match",
-    label: {{ match['name'] }},
+    label: "{{ match['name'] }}",
   }); 
   {% endfor %}
 }
@@ -50,13 +50,13 @@
                  
       <nav class="navbar navbar-light bg-light">
         <a class="navbar-brand" href="#">
-          <img src={{url_for("static", filename="logo2.png") }} width="30" height="30" class="d-inline-block align-top" alt="">
+          <img src={{url_for("static", filename="logo2.png") }} style="margin-left:20px;" width="30" height="30" class="d-inline-block align-top" alt="">
             Tango
         </a>
       </nav>    
       
       <li style="margin:auto;" class="nav-item">
-        <a class="nav-link" href="#">Start Over</a>
+        <a class="nav-link" href="{{ url_for('dashboard') }}">Start Over</a>
       </li>        
       
       <li style="margin:auto;" class="nav-item">

@@ -40,7 +40,9 @@
     <form class="form-signin" action="/register" method="post" enctype="multipart/form-data">
       <img class="mb-4" src="{{ url_for('static',filename='logo2.png') }}" alt="" width="180" height="150">      
       <h1 class="h3 mb-3 font-weight-normal">Sign Up</h1>             
-
+      {% if fail %}
+        <p class="lead">Error while signing up</p>
+      {% endif %}
       <label for="inputEmail" class="sr-only">Email address</label>
       <input type="email" id="inputEmail" name="email" class="form-control" placeholder="Email address" required="" autofocus="" value="">
      

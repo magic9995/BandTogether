@@ -100,10 +100,21 @@ def containsUser(conn,username):
         return False
     else: 
         return True
+    
+def checkWithinRangeUsingLoop(conn,username):
+    listOutput = []
+    listData =  returnDataOfTableInList(conn)
+    dictLocation = returnUserLocation(conn,username)
+    latitude = dictLocation["latitude"]
+    longitude = dictLocation["longitude"]
 
-
-        
-
+    for dictData in listData:
+        localLat = dictData["latitude"]
+        localLong = dictData["longitude"]
+        insideSQRT = math.pow(69.1*(localLat - latitude),2) + math.pow(69.1*(localLong - longitude)*math.cos(localLat/57.3),2)
+        if (math.sqrt(insideSQRT) < 100):
+            listOutput.append(dictData)
+    return listOutput
 
 def getConn():
     conn = psycopg2.connect("postgresql://vaidya45:xTFH37o0EEDY3gOd-UyZrw@free-tier11.gcp-us-east1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full&options=--cluster%3Dblast-horgi-470")

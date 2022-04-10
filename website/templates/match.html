@@ -11,13 +11,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">   
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}">
     <link href="CSS/bootstrap.css" rel="stylesheet" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}">
+    <link href="{{ url_for('static', filename='CSS/loadingPage.css') }}" rel="stylesheet">      
+
+    <script>function initMap() {
+  const myLatLng = { lat: {{ latitude}} + 1, lng: {{longitude }} + 1};
+  const map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 4,
+    center: myLatLng
+  });
+
+  new google.maps.Marker({
+    position: myLatLng,
+    map,
+    title: "You"
+  });     
+  
+  {% for match in matches %}
+    new google.maps.Marker({
+    position: { lat: 3 , lng: 3 },
+    map,    
+    title: "Match",
+    label: {{ match['name'] }},
+  }); 
+  {% endfor %}
+}
+</script>                          
+
   </head>
   
-  <body class="text-center">   
+  <body class="text-center">  
+  
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto"> 
+                 
+      <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+          <img src={{url_for("static", filename="logo2.png") }} width="30" height="30" class="d-inline-block align-top" alt="">
+            Tango
+        </a>
+      </nav>    
       
-    <p>{{ latitude }}</p>
-    <p>{{ longitude }}</p>
+      <li style="margin:auto;" class="nav-item">
+        <a class="nav-link" href="#">Start Over</a>
+      </li>        
+      
+      <li style="margin:auto;" class="nav-item">
+        <a class="nav-link" href="{{url_for('logout')}}">Log Out</a>
+      </li> 
+             
+    </ul>
+  </div>
+</nav> 
+                    
+  <div style="margin:auto;width:60%;height:60%;padding: 20px" id="map"></div>
+  
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDdXKTtqV-yrOE-2NrFKYFzPrIE3udHdQ&callback=initMap"></script>
+    
+  
+      <div class="table-wrapper" style="margin-top:25px;">
+        <table class="fl-table">
+          </div>
+          <thead>
+            <tr> 
+              <th>Username</th>
+              <th>Email</th>
+              <th>Coordinates</th>
+            </tr>
+            </thead>
+            <tbody>
+        {% for match in matches %}
+        <tr>
+          <td>{{match['name']}}</td>
+          <td>{{match['username']}}</td>
+          <td>{{match['latitude']}}, {{match['longitude']}}</td>
+        </tr>
+        {% endfor %}
+          </table>
+      </div>
+      <p class="mt-5 mb-3 text-muted">©2022 Tango: a bitcamp project</p>   
+
     
   </body>
 

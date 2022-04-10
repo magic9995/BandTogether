@@ -117,7 +117,7 @@ def checkWithinRangeUsingLoop(conn,username):
         if latitude is None or longitude is None or localLat is None or localLat is None:
             pass
         else:
-            insideSQRT = math.pow(69.1*(localLat - latitude),2) + math.pow(69.1*(localLong - longitude)*math.cos(localLat/57.3),2)
+            insideSQRT = math.pow(69.1*float(localLat - latitude),2) + math.pow(69.1*float(localLong - longitude)*math.cos(float(localLat)/57.3),2)
             if (math.sqrt(insideSQRT) < 100):
                 listOutput.append(dictData)
     return listOutput

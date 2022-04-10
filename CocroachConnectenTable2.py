@@ -62,7 +62,10 @@ def returnSpotifyDataOfUsername(conn,username):
         )
         result = cur.fetchone()
     conn.commit()
-    return(result)
+    return {"username": result[0], "liveness": result[1], "valence": result[2], 
+        "danceability": result[3], 
+    "loudness": result[4], "mode": result[5], "acousticness": result[6], "instrumentalness": result[7], 
+    "tempo": result[8], "energy": result[9],"longitude": result[10], "latitude": result[11] }
 
 def returnDataOfTableInList(conn):
     listOutput = []
@@ -101,11 +104,6 @@ def containsUser(conn,username):
         
 
 
-def main():
+def getConn():
     conn = psycopg2.connect("postgresql://vaidya45:xTFH37o0EEDY3gOd-UyZrw@free-tier11.gcp-us-east1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full&options=--cluster%3Dblast-horgi-470")
-    create_table(conn)
-    print(returnUserLocation(conn,"username2"))
-    conn.close()
-
-if __name__ == "__main__":
-    main() 
+    return conn

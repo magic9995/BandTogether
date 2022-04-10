@@ -48,7 +48,6 @@ class User:
         self.userName = profile['display_name']
 
         test = App()
-        print(test.getTopAlbumsArtists(self))
 
     def getSongData(self):
 
@@ -72,17 +71,26 @@ class App:
         self.userConn = dbUser.getConn()
         self.spotifyConn = dbSpotify.getConn()
 
+    def login(self, username, password):
+
+        validPass = dbUser.returnPasswordWhereUserNameIs(self.userConn, username)
+        if validPass[0] == password:
+            return True
+        else:
+            print(password)
+            return False
+
     def insertUserSongData(self, user: User, username):
 
         if dbSpotify.containsUser(self.spotifyConn, username):
 
             userExistData = dbSpotify.returnSpotifyDataOfUsername(self.spotifyConn, username)
-            dbSpotify.modifySpotifyData(self.spotifyConn, [username, user.attributes['liveness'], user.attributes['valence'],
+            dbSpotify.modifySpotifyData(self.spotifyConn, username, [user.attributes['liveness'], user.attributes['valence'],
                                     user.attributes['danceability'], user.attributes['loudness'], 
                                     user.attributes['mode'], user.attributes['acousticness'], 
                                     user.attributes['instrumentalness'], user.attributes['tempo'],
                                     user.attributes['energy'], userExistData['latitude'], 
-                                    userExistData['longititude']])
+                                    userExistData['longitude']])
             
         else:
 
@@ -110,13 +118,66 @@ class App:
             raise Exception("Account does now exist")
 
     def SignUp(self, username, password):
+        dbUser.print_values(self.userConn)
         if not dbUser.containsUser(self.userConn, username):
             dbUser.insertUser(self.userConn, 'NULL', password,
-                              'NULL', username, 'NULL')
+                              'NULL', username, None)
         else:
             raise Exception("User already exists")
 
-    def compare(self, user: tuple, match: tuple):
+    def changeName(self, username, name):
+
+        existData = dbUser.returnUserData(self.userConn, username)
+        dbUser.modifyUserData(self.userConn, username, [name, 
+                            existData["password"], existData["email"], 
+                            existData["username"], existData["phone"]])
+        
+
+    def getClosest(self, username):
+
+        userExistData = dbSpotify.returnSpotifyDataOfUsername(self.spotifyConn, username)
+        localUsers = dbSpotify.checkWithinRangeUsingLoop(self.spotifyConn, username)
+
+        matches = []
+
+        for location in localUsers:
+
+            if location['username'] != username:
+                print(self.compare(userExistData, location))
+                matches.append((location['username'], self.compare(userExistData, location) , dbSpotify.returnSpotifyDataOfUsername(self.spotifyConn, location['username'])))
+                if len(matches) > 4:
+                    matches.sort(key = lambda x: x[1])
+                    matches = matches[:4]
+
+        for i in matches:
+            print(i)
+
+        return matches        
+
+    def getContactInfo(self, matches):
+
+        info = []
+
+        for contact in matches:
+            print(contact[0])
+            if dbSpotify.containsUser(self.spotifyConn, contact[0]) and dbUser.containsUser(self.userConn, contact[0]):
+                spotifyData = dbSpotify.returnSpotifyDataOfUsername(self.spotifyConn, contact[0])
+                userData = dbUser.returnUserData(self.userConn, contact[0])
+                allData = {}
+                allData['username'] = spotifyData['username']
+                allData['longitude'] = spotifyData['longitude']
+                allData['latitude'] = spotifyData['latitude']
+                allData['phone'] = userData['phone']
+                allData['email'] = userData['email']
+                allData['username'] = userData['username']
+                allData['name'] = userData['name']
+
+                info.append(allData)
+
+        return info
+
+
+    def compare(self, user: dict, match: dict):
 
         ## Algorithm for getting difference is following:
         ## Sum for all attributes i: 
@@ -126,7 +187,7 @@ class App:
 
         for attribute in user.keys():
             if attribute not in "username latitude longitude".split():
-                sum += user.attributes[attribute] - match.attributes[attribute]
+                sum = user[attribute] - match[attribute]
                 diff += sum ** 2
 
         return diff

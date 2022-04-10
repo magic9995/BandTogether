@@ -7,34 +7,86 @@ from datetime import timedelta
 app = Flask(__name__)
 app.secret_key = "Band_Together_Right_Now"
 app.config['HOSTNAME'] = "Rohan"
-##app.permanent_session_lifetime = timedelta(days=5)
 
 @app.route('/')
-
 def index():
 
-   return render_template("index.html")
+   if session.get("log_in_fail") == True:
+      fail = True
+   else:
+      fail = False
 
-@app.route('/signup')
-def signup():
+   return render_template("index.html", fail=fail)
 
-   return render_template("signup.html")
-
-@app.route('/loading', methods=['POST'])
-def dashboard():
+@app.route('/login', methods=['POST'])
+def login():
 
    if request.method == 'POST':
       username = request.form["email"]
       password = request.form["password"]
+   
+   app = App()
+   if app.login(username, password):
+
+      session['username'] = username
+      session['password'] = password
+      session['log_in_fail'] = False
+      return redirect(url_for("dashboard"))
+
+   else:
+
+      session['log_in_fail'] = True
+      return redirect(url_for("index"))
+
+@app.route('/signup')
+def signup():
+
+   if session.get("sign_up_fail") == True:
+      fail = True
+   else:
+      fail = False
+
+   return render_template("signup.html", fail=fail)
+
+@app.route('/register', methods=["POST"])
+def register():
+
+   app = App()
+   if request.method == 'POST':
+      username = request.form["email"]
+      password = request.form["password"]
+      confirm = request.form["confirm"]
+   if password != confirm:
       
-   session['username'] = username
-   session['password'] = password
+      session["sign_up_fail"] = True
+      return redirect(url_for("signup"))
+   
+   app.SignUp(username, password)
+   #session["sign_up_fail"] = True
+   #return redirect(url_for("signup"))
+
+   session["sign_up_fail"] = False
+   session["username"] = username
+   session["password"] = password
+
+   return redirect(url_for("dashboard"))
+
+@app.route('/loading')
+def dashboard():
+
+   if session.get("username") == None:
+      
+      return redirect(url_for('index'))
+
+   username = session['username']
+   password = session['password']
 
    ## Get top albums and artists
    user = User()
    app = App()
 
-   app.SignUp(username, password)
+   #name = user.getName()
+   #app.changeName(username, name)
    app.insertUserSongData(user, username)
 
    info = app.getTopAlbumsArtists(user)
@@ -63,6 +115,7 @@ def location():
 
    return render_template("location.html")
 
+
 @app.route('/match', methods=['POST'])
 def match():
 
@@ -78,8 +131,17 @@ def match():
 
    session['latitude'] = latitude
    session['longitude'] = longitude
-   
-   return render_template("match.html", latitude=latitude, longitude=longitude)
+   matches = app.getClosest(session['username'])
+   matchesFormat = app.getContactInfo(matches)
+   return render_template("match.html", latitude=latitude, longitude=longitude,
+                           matches=matchesFormat, lenMatches = len(matches))
+
+@app.route('/logout')
+def logout():
+
+   session.pop('username', None)
+   return redirect(url_for("index"))
+
 
 if __name__ == '__main__':
    app.run(debug=True, host='0.0.0.0', threaded=True)

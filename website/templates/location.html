@@ -4,49 +4,120 @@
   
     <title>BandTogether</title>    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" 
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">            
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>   
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">   
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}">
-    <link href="CSS/bootstrap.css" rel="stylesheet" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <!--<link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/sign-in/">
-                          
+    <link href="{{ url_for('static', filename='CSS/bootstrap.css') }}" rel="stylesheet">
+      
+    <script>
     
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
+// Note: This example requires that you consent to location sharing when
+// prompted by your browser. If you see the error "The Geolocation service
+// failed.", it means you probably did not give permission for the browser to
+// locate you.
+let map, infoWindow;
 
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
+var position;
+var latitude;
+var longitude;
+function initMap() {
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: { lat: -34.397, lng: 150.644 },
+    zoom: 6,
+  });
+  infoWindow = new google.maps.InfoWindow();
+
+  const locationButton = document.createElement("button");
+  locationButton.setAttribute("id", "button");    
+  locationButton.style.display="none";
+  locationButton.textContent = "Pan to Current Location";
+  locationButton.classList.add("custom-map-control-button");
+  map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
+  locationButton.addEventListener("click", () => {
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          latitude = position.coords.latitude;
+          longitude = position.coords.longitude;
+          document.getElementById('latitude').value = latitude;
+          document.getElementById('longitude').value = longitude;
+          infoWindow.setPosition(pos);
+          infoWindow.setContent("Location found.");
+          infoWindow.open(map);
+          map.setCenter(pos);   
+          document.getElementById('submit').style.display = 'block';          
+        },
+        () => {
+          handleLocationError(true, infoWindow, map.getCenter());
         }
-      }
-    </style>
-    
-    <link href="CSS/signin.css" rel="stylesheet">  -->
-    
+      );
+    } else {
+      // Browser doesn't support Geolocation
+      handleLocationError(false, infoWindow, map.getCenter());
+    }
+  });
+}
+
+function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+  infoWindow.setPosition(pos);
+  infoWindow.setContent(
+    browserHasGeolocation
+      ? "Error: The Geolocation service failed."
+      : "Error: Your browser doesn't support geolocation."
+  );
+  infoWindow.open(map);
+}
+
+
+</script>
+
+  
   </head>
   
   <body class="text-center">   
-      
-    <form action="/match" method="post" enctype="multipart/form-data">
-      <div class="form-group">
-        <label for="longitude">Longitude</label>
-        <input type="longitude" name="longitude" class="form-control" id="longitude" placeholder="longitude">
-      </div>     
-      <div class="form-group">
-        <label for="latitude">Latitude</label>
-        <input type="latitude" name = "latitude" class="form-control" id="latitude" placeholder="latitude">
+  
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto"> 
+                     
+          <nav class="navbar navbar-light bg-light">
+            <a class="navbar-brand" href="#">
+              <img src={{url_for("static", filename="logo2.png") }} width="30" height="30" class="d-inline-block align-top" alt="">
+                Tango
+            </a>
+          </nav>    
+          
+          <li style="margin:auto;" class="nav-item">
+            <a class="nav-link" href="#">Start Over</a>
+          </li>        
+          
+          <li style="margin:auto;" class="nav-item">
+            <a class="nav-link" href="#">Log Out</a>
+          </li> 
+                 
+        </ul>
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+    </nav> 
+   
+                <div style="margin:auto;width:80%;height:80%;padding: 20px" id="map"></div>
+  
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDdXKTtqV-yrOE-2NrFKYFzPrIE3udHdQ&callback=initMap"></script>
+    
+  <button type="submit" style="margin-top: 10px;" onclick = "document.getElementById('button').dispatchEvent(new Event('click'));" class="btn btn-primary">Get Location</button>
+    
+    <form class="form-signin" action="/match" method="post" enctype="multipart/form-data">
+      <button type="submit" style="display: none;margin:auto;margin-top: 10px;" id="submit" class="btn btn-primary">Find Matches</button>
+      <input hidden type="latitude" id="latitude" name="latitude" class="form-control">                                                                                                                    
+      <input hidden type="longitude" id="longitude" name="longitude" class="form-control"> 
     </form>
     
   </body>

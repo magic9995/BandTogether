@@ -62,7 +62,11 @@ def returnSpotifyDataOfUsername(conn,username):
         )
         result = cur.fetchone()
     conn.commit()
-    return(result)
+    return {"username": result[0], "liveness": result[1], "valence": result[2], "danceability": result[3], 
+    "loudness": result[4], "mode": result[5], 
+    "acousticness": result[6], "instrumentalness": result[7], 
+    "tempo": result[8], "energy": result[9],
+    "longitude": result[10], "latitude": result[11] }
 
 def returnDataOfTableInList(conn):
     listOutput = []
@@ -73,7 +77,7 @@ def returnDataOfTableInList(conn):
         result = cur.fetchall()
     conn.commit()
     for row in result:
-        listOutput.append(row)
+        listOutput.append({"username": row[0], "liveness": row[1], "valence": row[2], "danceability": row[3], "loudness": row[4], "mode": row[5], "acousticness": row[6], "instrumentalness": row[7], "tempo": row[8], "energy": row[9],"longitude": row[10], "latitude": row[11] })
     return(listOutput)
 
 def returnUserLocation(conn,username):
@@ -83,7 +87,7 @@ def returnUserLocation(conn,username):
         )
         result = cur.fetchone()
     conn.commit()
-    return(result)
+    return {"longitude": result[0], "latitude":result[1]}
 
 def containsUser(conn,username):
     with conn.cursor() as cur:
@@ -101,11 +105,6 @@ def containsUser(conn,username):
         
 
 
-def main():
+def getConn():
     conn = psycopg2.connect("postgresql://vaidya45:xTFH37o0EEDY3gOd-UyZrw@free-tier11.gcp-us-east1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full&options=--cluster%3Dblast-horgi-470")
-    create_table(conn)
-    print(returnUserLocation(conn,"username2"))
-    conn.close()
-
-if __name__ == "__main__":
-    main() 
+    return conn

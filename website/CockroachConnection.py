@@ -63,7 +63,7 @@ def returnUserData(conn,username):
         logging.debug("delete_accounts(): status message: %s", cur.statusmessage)
         result = cur.fetchone()
     conn.commit() 
-    return(result)
+    return {"name": result[0],"password": result[1], "email": result[2], "username": result[3], "phone": result[4] }
 
 def returnDataOfTableInList(conn):
     listOutput = []
@@ -74,7 +74,7 @@ def returnDataOfTableInList(conn):
         result = cur.fetchall()
     conn.commit()
     for row in result:
-        listOutput.append(row)
+        listOutput.append({"name": row[0],"password": row[1], "email": row[2], "username": row[3], "phone": row[4] })
     return(listOutput)
 
 def containsUser(conn,username):

@@ -4,12 +4,13 @@ import mysql.connector
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="ENTER PASSWORD HERE"
+  password="Enter Password Here"
 )
 
 mycursor = mydb.cursor()
 #Using the database user
 mycursor.execute("USE USER")
+
 
 
 #mycursor.execute("CREATE DATABASE USER")
@@ -21,13 +22,14 @@ mycursor.execute("USE USER")
 # So, you can enter in this range only: from 00.00 to 99.99.
 
 
-#mycursor.execute("CREATE TABLE spotify (username VARCHAR(255), liveness decimal(4,2), valence decimal(4,2), danceability decimal(4,2), loudness decimal(4,2), mode decimal(4,2), acousticness decimal(4,2), instrumentalness decimal(4,2), tempo decimal(4,2), energy decimal(4,2))")
+#mycursor.execute("CREATE TABLE spotify (username VARCHAR(255), liveness decimal(4,2), valence decimal(4,2), danceability decimal(4,2), loudness decimal(4,2), mode decimal(4,2), acousticness decimal(4,2), instrumentalness decimal(4,2), tempo decimal(4,2), energy decimal(4,2), longitude int, latitude int)")
+
 #mycursor.execute("SHOW TABLES")
 
-def insertData(username, liveness, valence, danceability, loudness, mode, acousticness, instrumentalness, tempo, energy):
-    mySql_insert_query = """INSERT INTO spotify (username, liveness, valence, danceability, loudness, mode, acousticness, instrumentalness, tempo, energy) 
+def insertData(username, liveness, valence, danceability, loudness, mode, acousticness, instrumentalness, tempo, energy, longitude, latitude):
+    mySql_insert_query = """INSERT INTO spotify (username, liveness, valence, danceability, loudness, mode, acousticness, instrumentalness, tempo, energy, longitude, latitude) 
                            VALUES 
-                           ("{}", {}, {}, {}, {},{}, {}, {}, {},{})""".format(username, liveness, valence, danceability, loudness, mode, acousticness, instrumentalness, tempo, energy)
+                           ("{}", {}, {}, {}, {},{}, {}, {}, {},{},{},{})""".format(username, liveness, valence, danceability, loudness, mode, acousticness, instrumentalness, tempo, energy, longitude, latitude)
     mycursor.execute(mySql_insert_query)
     mydb.commit()
     print("Added the value")
@@ -54,18 +56,35 @@ def printValuesInTable():
 
 def modifySpotifyData(username, listSpotifyData):
   deleteWhereUserNameIs(username)
-  insertData(listSpotifyData[0],listSpotifyData[1],listSpotifyData[2],listSpotifyData[3],listSpotifyData[4],listSpotifyData[5],listSpotifyData[6],listSpotifyData[7],listSpotifyData[8],listSpotifyData[9])
+  insertData(listSpotifyData[0],listSpotifyData[1],listSpotifyData[2],listSpotifyData[3],listSpotifyData[4],listSpotifyData[5],listSpotifyData[6],listSpotifyData[7],listSpotifyData[8],listSpotifyData[9], listSpotifyData[10], listSpotifyData[11])
 
-def returnSpotifyData(username):
+def returnSpotifyDataForUsername(username):
   sql = "SELECT * FROM spotify WHERE username = '{}'".format(username)
   mycursor.execute(sql)
   result = mycursor.fetchone()
   return(result)
 
+def returnDataOfTableInList():
+    listOutput = []
+    mycursor.execute("SELECT * FROM spotify")
+    # fetch all the matching rows 
+    result = mycursor.fetchall()
+    # loop through the rows
+    for row in result:
+        listOutput.append(row)
+    return listOutput
+
+def returnUserLocation(username):
+    sql = "SELECT longitude,latitude FROM spotify WHERE username = '{}'".format(username)
+    mycursor.execute(sql)
+    result = mycursor.fetchone()
+    return(result)
 
 
 
-#insertData("username1",0.2 ,0.1 ,0.1 ,0.1,0.1,0.1,0.1,0.1,0.1)
+#insertData("username2",0.2 ,0.1 ,0.1 ,0.1,0.1,0.1,0.1,0.1,0.1,10000,1000)
 #deleteWhereNameIs("name2")
 printValuesInTable()
-# print(returnUserData("username1"))
+print(returnUserLocation("username2"))
+#print(returnDataOfTableInList())
+# print(returnUserDataForUsername("username1"))

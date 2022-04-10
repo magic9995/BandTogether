@@ -14,7 +14,7 @@ from psycopg2.errors import SerializationFailure
 def create_table(conn):
     with conn.cursor() as cur:
         cur.execute(
-            "CREATE TABLE IF NOT EXISTS Users (name VARCHAR(255), password VARCHAR(255), email VARCHAR(255), username VARCHAR(255), phone int)"
+            "CREATE TABLE IF NOT EXISTS Users (name VARCHAR(255), password VARCHAR(255), email VARCHAR(255), username VARCHAR(255) PRIMARY KEY, phone int)"
         )
     conn.commit()
 
@@ -76,6 +76,18 @@ def returnDataOfTableInList(conn):
     for row in result:
         listOutput.append(row)
     return(listOutput)
+
+def containsUser(conn,username):
+    with conn.cursor() as cur:
+        cur.execute(
+          "SELECT * FROM Users WHERE username = '{}'".format(username)
+        )
+        result = cur.fetchone()
+    conn.commit()
+    if (result is None):
+        return False
+    else: 
+        return True
 
 def getConn():
     conn = psycopg2.connect("postgresql://vaidya45:xTFH37o0EEDY3gOd-UyZrw@free-tier11.gcp-us-east1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full&options=--cluster%3Dblast-horgi-470")

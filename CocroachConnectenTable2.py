@@ -84,6 +84,20 @@ def returnUserLocation(conn,username):
         result = cur.fetchone()
     conn.commit()
     return(result)
+
+def containsUser(conn,username):
+    with conn.cursor() as cur:
+        cur.execute(
+          "SELECT * FROM spotify WHERE username = '{}'".format(username)
+        )
+        result = cur.fetchone()
+    conn.commit()
+    if (result is None):
+        return False
+    else: 
+        return True
+
+
         
 
 

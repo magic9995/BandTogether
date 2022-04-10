@@ -20,10 +20,10 @@ def create_table(conn):
 
 def insertUser(conn,name, password, email, username, phone):
     with conn.cursor() as cur:
-        cur.execute(
-           f"""INSERT INTO Users (name, password, email, username, phone) VALUES ('{name}', '{password}', '{email}', '{username}', {phone})"""
+            cur.execute(
+        f"""INSERT INTO Users (name, password, email, username, phone) VALUES ('{name}', '{password}', '{email}', '{username}', 5)"""
         )
-        print("Added the value")
+    print("Added the value")
     conn.commit()
   
 

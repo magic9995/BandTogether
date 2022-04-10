@@ -38,8 +38,16 @@
   <body class="text-center">   
       
     <p>{{ username }}</p>
-    <p>{{ password }}</p>    
-  
+    <p>{{ password }}</p>
+    {% for image in images%} 
+      <img src="{{ image }}" height=300 width=300 > 
+    {% endfor %}  
+      
+    <h2> Top Artists</h2>
+    {% for i in range(0, lenArtists) %}
+      <p>{{i + 1}}. {{artists[i]}}</p>
+    {% endfor %}
+    
   </body>
 
 </html>

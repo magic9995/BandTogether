@@ -116,7 +116,7 @@ class App:
         else:
             raise Exception("User already exists")
 
-    def compare(self, user1: User, user2: User):
+    def compare(self, user: tuple, match: tuple):
 
         ## Algorithm for getting difference is following:
         ## Sum for all attributes i: 
@@ -124,9 +124,10 @@ class App:
 
         diff = 0
 
-        for attribute in user1.attributes.keys():
-            sum += user1.attributes[attribute] - user2.attributes[attribute]
-            diff += sum ** 2
+        for attribute in user.keys():
+            if attribute not in "username latitude longitude".split():
+                sum += user.attributes[attribute] - match.attributes[attribute]
+                diff += sum ** 2
 
         return diff
 

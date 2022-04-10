@@ -1,6 +1,6 @@
 #from wsgiref.util import request_uri
 from flask import Flask, request, render_template, session, redirect, url_for
-from App import User, App
+from app import User, App
 import sys
 from datetime import timedelta
 

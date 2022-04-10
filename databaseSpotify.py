@@ -1,10 +1,11 @@
 from readline import insert_text
 import mysql.connector
-
+from numpy import power
+import math
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="ENTER PASSWORD HERE"
+  password="ADD PASSWORD"
 )
 
 mycursor = mydb.cursor(buffered = True)
@@ -90,6 +91,22 @@ def containsUser(username):
    else: 
      return True
 
+def checkWithinRangeUsingLoop(username):
+    listOutput = []
+    listData =  returnDataOfTableInList()
+    dictLocation = returnUserLocation(username)
+    latitude = dictLocation["latitude"]
+    longitude = dictLocation["longitude"]
+
+    for dictData in listData:
+        localLat = dictData["latitude"]
+        localLong = dictData["longitude"]
+        insideSQRT = math.pow(69.1*(localLat - latitude),2) + math.pow(69.1*(localLong - longitude)*math.cos(localLat/57.3),2)
+        if (math.sqrt(insideSQRT) < 100):
+            listOutput.append(dictData)
+    return listOutput
+
+
 def checkWithinRange(username):
     listOutput = []
     dictLocation = returnUserLocation(username)
@@ -122,6 +139,8 @@ def checkWithinRange(username):
 #printValuesInTable()
 #print(returnUserLocation("username2"))
 #print(checkWithinRange("username1"))
+#print("new")
+#print(checkWithinRangeUsingLoop("username1"))
 # print(containsUser("username2"))
 #print(returnSpotifyDataForUsername("username1"))
 #print(returnDataOfTableInList())

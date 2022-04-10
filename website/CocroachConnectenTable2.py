@@ -23,7 +23,7 @@ from CockroachConnection import modifyUserData
 def create_table(conn):
     with conn.cursor() as cur:
         cur.execute(
-           "CREATE TABLE IF NOT EXISTS spotify (username VARCHAR(255), liveness decimal(4,2), valence decimal(4,2), danceability decimal(4,2), loudness decimal(4,2), mode decimal(4,2), acousticness decimal(4,2), instrumentalness decimal(4,2), tempo decimal(4,2), energy decimal(4,2),longitude int, latitude int)"
+           "CREATE TABLE IF NOT EXISTS spotify (username VARCHAR(255), liveness decimal(4,2), valence decimal(4,2), danceability decimal(4,2), loudness decimal(4,2), mode decimal(4,2), acousticness decimal(4,2), instrumentalness decimal(4,2), tempo decimal(4,2), energy decimal(4,2),longitude decimal(10,5), latitude decimal(10,5))"
         )
     conn.commit()
 

@@ -1,7 +1,9 @@
 import time
 import random
 import logging
+import math
 from argparse import ArgumentParser, RawTextHelpFormatter
+from pandas import notnull
 
 import psycopg2
 from psycopg2.errors import SerializationFailure
@@ -111,9 +113,13 @@ def checkWithinRangeUsingLoop(conn,username):
     for dictData in listData:
         localLat = dictData["latitude"]
         localLong = dictData["longitude"]
-        insideSQRT = math.pow(69.1*(localLat - latitude),2) + math.pow(69.1*(localLong - longitude)*math.cos(localLat/57.3),2)
-        if (math.sqrt(insideSQRT) < 100):
-            listOutput.append(dictData)
+
+        if latitude is None or longitude is None or localLat is None or localLat is None:
+            pass
+        else:
+            insideSQRT = math.pow(69.1*(localLat - latitude),2) + math.pow(69.1*(localLong - longitude)*math.cos(localLat/57.3),2)
+            if (math.sqrt(insideSQRT) < 100):
+                listOutput.append(dictData)
     return listOutput
 
 def getConn():

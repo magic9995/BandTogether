@@ -15,7 +15,7 @@ from psycopg2.errors import SerializationFailure
 def create_table(conn):
     with conn.cursor() as cur:
         cur.execute(
-            "CREATE TABLE IF NOT EXISTS Users (name VARCHAR(255), password VARCHAR(255), email VARCHAR(255), username VARCHAR(255), phone int)"
+            "CREATE TABLE IF NOT EXISTS Users (name VARCHAR(255), password VARCHAR(255), email VARCHAR(255), username VARCHAR(255) PRIMARY KEY, phone int)"
         )
     conn.commit()
 
@@ -78,17 +78,26 @@ def returnDataOfTableInList(conn):
         listOutput.append(row)
     return(listOutput)
 
+def containsUser(conn,username):
+    with conn.cursor() as cur:
+        cur.execute(
+          "SELECT * FROM Users WHERE username = '{}'".format(username)
+        )
+        result = cur.fetchone()
+    conn.commit()
+    if (result is None):
+        return False
+    else: 
+        return True
+
 def main():
     conn = psycopg2.connect("postgresql://vaidya45:xTFH37o0EEDY3gOd-UyZrw@free-tier11.gcp-us-east1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full&options=--cluster%3Dblast-horgi-470")
     create_table(conn)
     insertUser(conn,"Raghav", "password2", "email2", "username2", 123456)
     insertUser(conn,"Ram", "password3", "email22", "username21", 123456)
+    insertUser(conn,"Ram", "password3", "email22", "username21", 123456)
     print("Table:- ")
     print_values(conn)
-    #print("Raghav's Data:- ")
-    #print(returnUserData(conn,"username2"))
-    #print(returnPasswordWhereUserNameIs(conn,"username2"))
-    #modifyUserData(conn,"username2",["ABC","ppp","emaaill","ussrrrnnnmmm",10])
     conn.close()
 
 if __name__ == "__main__":

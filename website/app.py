@@ -4,6 +4,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import CockroachConnection as dbUser
 import CocroachConnectenTable2 as dbSpotify
+import os
 
 class User:
 
@@ -15,7 +16,6 @@ class User:
 
         ## Authenticate Spotify Account
         scope = "user-top-read user-read-private"
-
         sp = spotipy.Spotify(auth_manager = SpotifyOAuth(scope=scope, 
                     client_id='ce9afb29e4284a729918445e8e9be2e0',
                     client_secret='32f4053e166249dfbf307a029658eb58',

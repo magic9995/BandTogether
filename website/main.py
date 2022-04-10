@@ -10,9 +10,15 @@ app.config['HOSTNAME'] = "Rohan"
 ##app.permanent_session_lifetime = timedelta(days=5)
 
 @app.route('/')
+
 def index():
 
    return render_template("index.html")
+
+@app.route('/signup')
+def signup():
+
+   return render_template("signup.html")
 
 @app.route('/loading', methods=['POST'])
 def dashboard():

@@ -4,7 +4,7 @@ import mysql.connector
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="Enter Password Here"
+  password="ENTER PASSWORD"
 )
 
 mycursor = mydb.cursor()
@@ -62,7 +62,8 @@ def returnSpotifyDataForUsername(username):
   sql = "SELECT * FROM spotify WHERE username = '{}'".format(username)
   mycursor.execute(sql)
   result = mycursor.fetchone()
-  return(result)
+  return {"username": result[0], "liveness": result[1], "valence": result[2], "danceability": result[3], "loudness": result[4], "mode": result[5], "acousticness": result[6], "instrumentalness": result[7], "tempo": result[8], "energy": result[9],"longitude": result[10], "latitude": result[11] }
+
 
 def returnDataOfTableInList():
     listOutput = []
@@ -71,20 +72,34 @@ def returnDataOfTableInList():
     result = mycursor.fetchall()
     # loop through the rows
     for row in result:
-        listOutput.append(row)
+        listOutput.append({"username": row[0], "liveness": row[1], "valence": row[2], "danceability": row[3], "loudness": row[4], "mode": row[5], "acousticness": row[6], "instrumentalness": row[7], "tempo": row[8], "energy": row[9],"longitude": row[10], "latitude": row[11] })
     return listOutput
 
 def returnUserLocation(username):
     sql = "SELECT longitude,latitude FROM spotify WHERE username = '{}'".format(username)
     mycursor.execute(sql)
     result = mycursor.fetchone()
-    return(result)
+
+    return {"longitude": result[0], "latitude":result[1]}
+
+def containsUser(username):
+   sql = "SELECT * FROM spotify WHERE username = '{}'".format(username)
+   mycursor.execute(sql)
+   result = mycursor.fetchone()
+   if (result is None):
+     return False
+   else: 
+     return True
 
 
 
-#insertData("username2",0.2 ,0.1 ,0.1 ,0.1,0.1,0.1,0.1,0.1,0.1,10000,1000)
+
+#insertData("NULL","NULL" ,"NULL" ,"NULL" ,"NULL","NULL","NULL","NULL","NULL","NULL","NULL","NULL")
+deleteWhereUserNameIs("NULL")
 #deleteWhereNameIs("name2")
-printValuesInTable()
+#printValuesInTable()
 print(returnUserLocation("username2"))
+# print(containsUser("username2"))
+#print(returnSpotifyDataForUsername("username1"))
 #print(returnDataOfTableInList())
 # print(returnUserDataForUsername("username1"))

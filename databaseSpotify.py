@@ -7,7 +7,7 @@ mydb = mysql.connector.connect(
   password="ENTER PASSWORD"
 )
 
-mycursor = mydb.cursor()
+mycursor = mydb.cursor(buffered = True)
 #Using the database user
 mycursor.execute("USE USER")
 
@@ -79,7 +79,6 @@ def returnUserLocation(username):
     sql = "SELECT longitude,latitude FROM spotify WHERE username = '{}'".format(username)
     mycursor.execute(sql)
     result = mycursor.fetchone()
-
     return {"longitude": result[0], "latitude":result[1]}
 
 def containsUser(username):
@@ -91,14 +90,40 @@ def containsUser(username):
    else: 
      return True
 
+def checkWithinRange(username):
+    listOutput = []
+    dictLocation = returnUserLocation(username)
+    latitude = dictLocation["latitude"]
+    longitude = dictLocation["longitude"]
+    
+    sql = """ SELECT latitude, longitude, SQRT(
+    POW(69.1 * (latitude - {}), 2) +
+    POW(69.1 * ({} - longitude) * COS(latitude / 57.3), 2)) AS distance
+    FROM spotify HAVING distance < 100 ORDER BY distance """.format(latitude, longitude)
+    mycursor.execute(sql)
+     # fetch all the matching rows 
+    result = mycursor.fetchall()
+    # loop through the rows
+    for row in result:
+        listOutput.append(row)
+    return listOutput
+
+
+    
 
 
 
-#insertData("NULL","NULL" ,"NULL" ,"NULL" ,"NULL","NULL","NULL","NULL","NULL","NULL","NULL","NULL")
-deleteWhereUserNameIs("NULL")
-#deleteWhereNameIs("name2")
+
+
+# insertData("username1",0.1 ,0.2 ,0.3 ,0.4,0.5,0.6,0.7,0.8,0.9,42,42)
+# insertData("username2",0.1 ,0.2 ,0.3 ,0.4,0.5,0.6,0.7,0.8,0.9,43,43)
+# insertData("username3",0.1 ,0.2 ,0.3 ,0.4,0.5,0.6,0.7,0.8,0.9,51,51)
+# insertData("username3",0.1 ,0.2 ,0.3 ,0.4,0.5,0.6,0.7,0.8,0.9,1000,1000)
+#deleteWhereUserNameIs("NULL")
+#deleteWhereUserNameIs("username2")
 #printValuesInTable()
-print(returnUserLocation("username2"))
+#print(returnUserLocation("username2"))
+#print(checkWithinRange("username1"))
 # print(containsUser("username2"))
 #print(returnSpotifyDataForUsername("username1"))
 #print(returnDataOfTableInList())

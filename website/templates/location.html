@@ -10,18 +10,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">   
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}">
-    <link href="{{ url_for('static', filename='CSS/loadingPage.css') }}" rel="stylesheet">      
-    
-
-    <script>
-        setTimeout(function(){
-            window.location.href = "{{ url_for('location')}}";
-        }, 2000);
-    </script>
-
-    
-    <!--<link href="CSS/bootstrap.css" rel="stylesheet" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/sign-in/">
+    <link href="CSS/bootstrap.css" rel="stylesheet" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <!--<link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/sign-in/">
                           
     
     <style>
@@ -47,16 +37,17 @@
   
   <body class="text-center">   
       
-    <p>{{ username }}</p>
-    <p>{{ password }}</p>
-    {% for image in images%} 
-      <img src="{{ image }}" height=300 width=300 > 
-    {% endfor %}  
-      
-    <h2> Top Artists</h2>
-    {% for i in range(0, lenArtists) %}
-      <p>{{i + 1}}. {{artists[i]}}</p>
-    {% endfor %}
+    <form action="/match" method="post" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="longitude">Longitude</label>
+        <input type="longitude" name="longitude" class="form-control" id="longitude" placeholder="longitude">
+      </div>     
+      <div class="form-group">
+        <label for="latitude">Latitude</label>
+        <input type="latitude" name = "latitude" class="form-control" id="latitude" placeholder="latitude">
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
     
   </body>
 

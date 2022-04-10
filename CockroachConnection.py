@@ -77,19 +77,8 @@ def returnDataOfTableInList(conn):
         listOutput.append(row)
     return(listOutput)
 
-def main():
+def getConn():
     conn = psycopg2.connect("postgresql://vaidya45:xTFH37o0EEDY3gOd-UyZrw@free-tier11.gcp-us-east1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full&options=--cluster%3Dblast-horgi-470")
-    create_table(conn)
-    insertUser(conn,"Raghav", "password2", "email2", "username2", 123456)
-    insertUser(conn,"Ram", "password3", "email22", "username21", 123456)
-    print("Table:- ")
-    print_values(conn)
-    #print("Raghav's Data:- ")
-    #print(returnUserData(conn,"username2"))
-    #print(returnPasswordWhereUserNameIs(conn,"username2"))
-    #modifyUserData(conn,"username2",["ABC","ppp","emaaill","ussrrrnnnmmm",10])
-    conn.close()
+    return conn
 
-if __name__ == "__main__":
-    main()
 

@@ -1,6 +1,8 @@
 import pandas as pd
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+import CockroachConnection as dbUser
+import CocroachConnectenTable2 as dbSpotify
 
 class User:
 
@@ -60,17 +62,23 @@ class User:
 
 class App:
 
+    conn = None
+
     def __init__(self):
 
-        pass
+        self.conn = dbUser.getConn()
 
     def getUserData(self):
 
         pass
 
-    def Login(self):
+    def SignUp(self, username, password):
 
-        pass
+        if !(dbUser.contains(self.conn, username)):
+            dbUser.insertUser(self.conn, "", password,
+                                "", username, "")
+        else:
+            raise Exception("User already exists")
 
     def compare(self, user1: User, user2: User):
 

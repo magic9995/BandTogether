@@ -9,7 +9,7 @@ body {
   /*Styling for images*/
   .images{
     --gap: 18px;
-    --num-cols: 4;
+    --num-cols: 2;
     --row-height: 250px;
   
     box-sizing: border-box;

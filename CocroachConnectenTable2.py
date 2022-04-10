@@ -1,4 +1,3 @@
-from readline import insert_text
 import time
 import random
 import logging

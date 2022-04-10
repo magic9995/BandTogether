@@ -4,7 +4,7 @@ import mysql.connector
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="ENTER PASSWORD"
+  password="ENTER PASSWORD HERE"
 )
 
 mycursor = mydb.cursor()
@@ -66,14 +66,14 @@ def returnUserData(username):
   sql = "SELECT * FROM USERS WHERE username = '{}'".format(username)
   mycursor.execute(sql)
   result = mycursor.fetchone()
-  return(result)
+  return {"name": result[0],"password": result[1], "email": result[2], "username": result[3], "phone": result[4] }
 
 
 
 
 #insertUser("name2", "password2", "email2", "username2", 123456)
 #deleteWhereNameIs("name2")
-printValuesInTable()
+#printValuesInTable()
 #print(returnPasswordWhereNameIs("name1"))
 #modifyUserData("username1",["nameNew","passwordNew","emailNew","usernameNew",123456])
-print(returnUserData("username1"))
+#print(returnUserData("username2"))

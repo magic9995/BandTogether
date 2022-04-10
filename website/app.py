@@ -1,6 +1,9 @@
+from asyncio.windows_events import NULL
 import pandas as pd
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+import CockroachConnection as dbUser
+import CocroachConnectenTable2 as dbSpotify
 
 class User:
 
@@ -33,6 +36,7 @@ class User:
                                         'tempo', 'energy']]
         analysis['loudness'] /= 60
         analysis['tempo'] /= 200
+        analysis['loudness'] = abs(analysis['loudness'])
 
         ## Set class variables
 
@@ -60,17 +64,57 @@ class User:
 
 class App:
 
+    userConn = None
+    spotifyConn = None
+
     def __init__(self):
 
-        pass
+        self.userConn = dbUser.getConn()
+        self.spotifyConn = dbSpotify.getConn()
 
-    def getUserData(self):
+    def insertUserSongData(self, user: User, username):
 
-        pass
+        if dbSpotify.containsUser(self.spotifyConn, username):
 
-    def Login(self):
+            userExistData = dbSpotify.returnSpotifyDataOfUsername(self.spotifyConn, username)
+            dbSpotify.modifySpotifyData(self.spotifyConn, [username, user.attributes['liveness'], user.attributes['valence'],
+                                    user.attributes['danceability'], user.attributes['loudness'], 
+                                    user.attributes['mode'], user.attributes['acousticness'], 
+                                    user.attributes['instrumentalness'], user.attributes['tempo'],
+                                    user.attributes['energy'], userExistData['latitude'], 
+                                    userExistData['longititude']])
+            
+        else:
 
-        pass
+            dbSpotify.insertData(self.spotifyConn, username, user.attributes['liveness'], user.attributes['valence'],
+                                    user.attributes['danceability'], user.attributes['loudness'], 
+                                    user.attributes['mode'], user.attributes['acousticness'], 
+                                    user.attributes['instrumentalness'], user.attributes['tempo'],
+                                    user.attributes['energy'], 'NULL', 'NULL')
+            
+    def insertLocation(self, username, latitude, longitude):
+
+        if dbSpotify.containsUser(self.spotifyConn, username):
+
+            userExistData = dbSpotify.returnSpotifyDataOfUsername(self.spotifyConn, username)
+            dbSpotify.modifySpotifyData(self.spotifyConn, username, [username, userExistData['liveness'], 
+                                    userExistData['valence'],
+                                    userExistData['danceability'], userExistData['loudness'], 
+                                    userExistData['mode'], userExistData['acousticness'], 
+                                    userExistData['instrumentalness'], userExistData['tempo'],
+                                    userExistData['energy'], latitude, 
+                                    longitude])
+            
+        else:
+
+            raise Exception("Account does now exist")
+
+    def SignUp(self, username, password):
+        if not dbUser.containsUser(self.userConn, username):
+            dbUser.insertUser(self.userConn, 'NULL', password,
+                              'NULL', username, 'NULL')
+        else:
+            raise Exception("User already exists")
 
     def compare(self, user1: User, user2: User):
 

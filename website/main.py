@@ -9,6 +9,11 @@ def index():
 
    return render_template("index.html")
 
+@app.route('/load')
+def load():
+
+   return render_template("load.html")
+
 @app.route('/loading', methods=['POST'])
 def dashboard():
 

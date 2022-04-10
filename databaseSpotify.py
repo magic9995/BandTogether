@@ -4,7 +4,7 @@ import mysql.connector
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="ENTER PASSWORD"
+  password="ENTER PASSWORD HERE"
 )
 
 mycursor = mydb.cursor(buffered = True)
@@ -96,7 +96,7 @@ def checkWithinRange(username):
     latitude = dictLocation["latitude"]
     longitude = dictLocation["longitude"]
     
-    sql = """ SELECT latitude, longitude, SQRT(
+    sql = """ SELECT username,liveness, valence, danceability, loudness, mode, acousticness, instrumentalness, tempo, energy,latitude, longitude, SQRT(
     POW(69.1 * (latitude - {}), 2) +
     POW(69.1 * ({} - longitude) * COS(latitude / 57.3), 2)) AS distance
     FROM spotify HAVING distance < 100 ORDER BY distance """.format(latitude, longitude)
@@ -108,8 +108,6 @@ def checkWithinRange(username):
         listOutput.append(row)
     return listOutput
 
-
-    
 
 
 
